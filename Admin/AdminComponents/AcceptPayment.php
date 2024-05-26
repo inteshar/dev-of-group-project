@@ -4,13 +4,19 @@ require_once '../../dbConnect.php'; // Include your database connection file
 session_start(); // Ensure session is started before using $_SESSION
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+
+    $staff = $conn->prepare("SELECT name FROM `users` WHERE email = '".$_SESSION['login_user']."';");
+    $staff->execute();
+    $staffName = $staff->fetch(PDO::FETCH_ASSOC);
+
     // Check if the POST variables are set
     $memberId = $_POST['memberId'];
     $name = $_POST['name'];
     $payment = $_POST['payment'];
     
     // Check if the session variable is set
-    $pay_receivedBy = $_SESSION['login_user'];
+    $pay_receivedBy = $staffName['name'];
     
     $date = date("Y-m-d");
 

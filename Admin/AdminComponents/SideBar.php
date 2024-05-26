@@ -19,6 +19,10 @@ $stmt->bindParam(':login_user', $_SESSION['login_user']);
 $stmt->execute();
 $userRole = $stmt->fetch(PDO::FETCH_ASSOC);
 
+$staff = $conn->prepare("SELECT name FROM `users` WHERE email = '".$_SESSION['login_user']."';");
+$staff->execute();
+$staffName = $staff->fetch(PDO::FETCH_ASSOC);
+
 ?>
 
 <div>
@@ -33,12 +37,15 @@ $userRole = $stmt->fetch(PDO::FETCH_ASSOC);
                 <img src="../../Assets/logo.png" alt="" style="height: 40px; width: 50px" />
                 Development of Group
             </p>
-            <div class="card">
+            <p class="logginUser text-center border-0 text-light fw-bold loggedinusermail p-2 rounded shadow">
+                   <?php echo $staffName['name']; ?>
+                </p>
+            <!-- <div class="card">
                 <p class="text-center border-0 text-light loggedinusermail p-2 rounded shadow">
-                    <?php echo $_SESSION['login_user'] ?>
+                    <?php echo $staffName['name']; ?>
                 </p>
                 <p style="font-size: 12px;" class="fw-bold text-center border-0 text-danger p-0 m-0" id="timeCounter"></p>
-            </div>
+            </div> -->
         </div>
     </div>
 
@@ -207,7 +214,7 @@ $userRole = $stmt->fetch(PDO::FETCH_ASSOC);
         </div>
     </div>
 </div>
-<script>
+<!-- <script>
     // Function to format duration
     function formatDuration(duration) {
         var hours = Math.floor(duration / 3600);
@@ -245,7 +252,7 @@ $userRole = $stmt->fetch(PDO::FETCH_ASSOC);
 
     // Initial call to start updating time counter
     updateTimeCounter();
-</script>
+</script> -->
 
 
 <style>
@@ -289,5 +296,8 @@ $userRole = $stmt->fetch(PDO::FETCH_ASSOC);
     .loggedinusermail {
         background: #2a6877;
         cursor: none;
+    }
+    .logginUser{
+        font-size: 11px;
     }
 </style>

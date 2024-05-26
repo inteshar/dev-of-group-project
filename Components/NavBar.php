@@ -41,11 +41,11 @@
                             About
                         </a>
                     </li>
-                    <li class="nav-item plansNavBtn">
+                    <!-- <li class="nav-item plansNavBtn">
                         <a href="../Pages/PlansPage.php" class="nav-link active fw-bold">
                             Plans
                         </a>
-                    </li>
+                    </li> -->
                     <li class="nav-item loanNavBtn">
                         <a href="../Pages/LoanStatusPage.php" class="nav-link active fw-bold">
                             Loan Status

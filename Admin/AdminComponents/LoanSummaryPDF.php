@@ -17,12 +17,25 @@ $stmt->execute();
 // Fetch the result as an associative array
 $member = $stmt->fetch(PDO::FETCH_ASSOC);
 
+$staff = $conn->prepare("SELECT name FROM `users` WHERE email = '".$_SESSION['login_user']."';");
+$staff->execute();
+$staffName = $staff->fetch(PDO::FETCH_ASSOC);
+
+$openedDate = new DateTime($member['account_opened_on']);
+$planDays = new DateInterval('P' . $member['plan'] . 'D');
+$openedDate->add($planDays);
+$dueDate = $openedDate->format('Y-m-d');
+
 require_once '../../Admin/dompdf/autoload.inc.php'; // Include the autoloader
 use Dompdf\Dompdf;
 
 $count = 1;
 $PAGE_NUM = 1;
-$currentDateTime = date("Y-m-d H:i:s");
+$currentDate = date("Y-m-d");
+
+$loanAmount = number_format($member['loan_amount'], 2);
+$approvalAmount = number_format($member['approval_amount'], 2);
+$emi = number_format($member['emi'], 2);
 
 // HTML content to be converted to PDF
 $customCss = "
@@ -85,16 +98,15 @@ thead td{
 }
 .table-custom th, .table-custom td {
     padding: 8px;
-    text-align: center;
+    text-align: left;
 }
 .party{
     border: 1px solid #000;
-    height: 200px;
-    width: 150px;
+    height: 100px;
+    width: 80px;
     margin: 10px;
-}
-tbody tr td{
-    
+    text-align: center;
+    font-size: 11px;
 }
 .footer-text{
     color: #5c6b73;
@@ -105,6 +117,10 @@ tbody tr td{
 i{
     font-weight: bold;
 }
+.endLoan{
+    font-size: 11px;
+    color: red;
+}
 ";
 $html = "
 <!DOCTYPE html>
@@ -112,7 +128,7 @@ $html = "
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>" . $member['name'] . " Loan Account Summary " . $currentDateTime . "</title>
+    <title>" . $member['name'] . " Loan Account Summary " . $currentDate . "</title>
     <style>
         $customCss
     </style>
@@ -135,11 +151,11 @@ $html = "
             </div>
             <div class='col'>
                 <h4>Loan Amount</h4>
-                <p>Rs. {$member['loan_amount']}</p>
+                <p>Rs. {$loanAmount}</p>
             </div>
             <div class='col'>
                 <h4>EMI</h4>
-                <p>Rs. {$member['emi']}/day</p>
+                <p>Rs. {$emi}/day</p>
             </div>
         </div>
         <div class='right'>
@@ -149,11 +165,11 @@ $html = "
             </div>
             <div class='col'>
                 <h4>Approved Amount</h4>
-                <p>Rs. {$member['approval_amount']}</p>
+                <p>Rs. {$approvalAmount}</p>
             </div>
-            <div class='col'>
+            <div class='d-flex'>
                 <h4>Plan</h4>
-                <p>{$member['plan']} Days</p>
+                <p>{$member['plan']} Days <br><span class='endLoan'>*Loan End Date: {$dueDate}</span></p>
             </div>
             <div class='col'>
                 <h4>Account Opened on</h4>
@@ -165,14 +181,14 @@ $html = "
     <table class='table-custom'>
         <tbody>
         <tr>
-        <td class='party'>Photo</td>
+        <td class=''><p class='party'>Photo</p></td>
         <td class=''></td>
-        <td class='party'>Company Seal/Stamp</td>
+        <td class=''><p class='party'>Company Seal/Stamp</p></td>
         </tr>
         </tbody>
         <thead>
             <tr>
-                <td>Name <br><i>".$member['name']."</i></td>
+                <td>Name : <i>".$member['name']."</i></td>
                 <td></td>
                 <td>Approved By .................................................................</td>
             </tr>
@@ -183,8 +199,8 @@ $html = "
             </tr>
         </thead>
         </table>
-        <p class='footer-text'>Generated On: " . $currentDateTime . "</p>
-        <p class='footer-text'>Approved By: " . $_SESSION['login_user'] . "</p>
+        <p class='footer-text'>Generated On: " . $currentDate . "</p>
+        <p class='footer-text'>Approved By: " . $staffName['name'] . "</p>
         <p class='company-name'>Development of Group</p>
         </body>
         </html>
@@ -205,4 +221,4 @@ $dompdf->setPaper('A4', 'portrait');
 $dompdf->render();
 
 // Output PDF to the browser for download
-$dompdf->stream($member['name'] . " Loan Account Summary " . $currentDateTime . '.pdf', ['Attachment' => false]);
+$dompdf->stream($member['name'] . " Loan Account Summary " . $currentDate . '.pdf', ['Attachment' => false]);

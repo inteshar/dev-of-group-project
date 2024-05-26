@@ -10,6 +10,11 @@ $stmt->execute();
 
 // Fetch the result as an associative array
 $member = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$openedDate = new DateTime($member['account_opened_on']);
+$planDays = new DateInterval('P' . $member['plan'] . 'D');
+$openedDate->add($planDays);
+$dueDate = $openedDate->format('Y-m-d');
 ?>
 
 <!DOCTYPE html>
@@ -78,7 +83,7 @@ $member = $stmt->fetch(PDO::FETCH_ASSOC);
                             <h5><?php echo $member['address_temp']; ?></h5>
                         </div>
                         <div class="member-info">
-                            <p class="member-info-heading">Account Opened On</p>
+                            <p class="member-info-heading">Loan Approved On</p>
                             <h5><?php echo $member['account_opened_on']; ?></h5>
                         </div>
                     </div>
@@ -104,8 +109,8 @@ $member = $stmt->fetch(PDO::FETCH_ASSOC);
                             <h5><?php echo $member['plan']; ?> Days</h5>
                         </div>
                         <div class="member-info">
-                            <p class="member-info-heading">Loan Approved On</p>
-                            <h5><?php echo $member['account_opened_on']; ?></h5>
+                            <p class="member-info-heading">Loan End Date</p>
+                            <h5><?php echo $dueDate; ?></h5>
                         </div>
                     </div>
                 </div>

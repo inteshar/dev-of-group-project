@@ -6,8 +6,7 @@
         our flexible loan options
       </h1>
       <p class="pb-3">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, porro
-        accusantium numquam omnis commodi provident.
+        Explore a variety of financing options tailored to your needs. Whether you're looking to start a new business, expand your current operations, or simply manage day-to-day expenses, our loan solutions are designed to help you succeed. Secure the funds you need with competitive rates and flexible terms.
       </p>
       <a
         href="/Pages/ContactPage.php"

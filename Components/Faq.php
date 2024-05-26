@@ -2,7 +2,7 @@
     <h4 class="fw-bold text-muted text-center">FAQ</h4>
     <h1 class="fw-bold text-center">Frequently Asked Questions</h1>
     <p class="text-center">
-        Get all of you answers here or you can contact us if you cannot find the
+        Get all of your answers here or you can contact us if you cannot find the
         relevant answer
     </p>
     <div class="accordion container" id="accordionExample">
@@ -14,11 +14,7 @@
             </h2>
             <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur
-                    quis blanditiis cumque cupiditate, autem rerum beatae eveniet
-                    eligendi iusto, non eius ratione nobis quidem dicta nostrum
-                    reiciendis consequuntur culpa assumenda deleniti dolorem officia
-                    maiores.
+                    Choosing us for your loan needs ensures you benefit from competitive interest rates, flexible repayment plans, and exceptional customer service. Our commitment to transparency and support throughout the loan process makes us a trusted partner in managing your financial goals.
                 </div>
             </div>
         </div>
@@ -30,11 +26,7 @@
             </h2>
             <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur
-                    quis blanditiis cumque cupiditate, autem rerum beatae eveniet
-                    eligendi iusto, non eius ratione nobis quidem dicta nostrum
-                    reiciendis consequuntur culpa assumenda deleniti dolorem officia
-                    maiores.
+                    Yes, our installment plans are designed to be more flexible and accessible than many others in the market. We offer customized solutions to meet your financial needs, ensuring that you can manage your repayments more comfortably and efficiently.
                 </div>
             </div>
         </div>
@@ -46,13 +38,12 @@
             </h2>
             <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur
-                    quis blanditiis cumque cupiditate, autem rerum beatae eveniet
-                    eligendi iusto, non eius ratione nobis quidem dicta nostrum
-                    reiciendis consequuntur culpa assumenda deleniti dolorem officia
-                    maiores.
+                    The maximum loan amount you can obtain with us varies depending on several factors including your credit history, income level, and specific financial needs. We recommend contacting our support team to provide you with a personalized assessment and the most accurate information tailored to your circumstances.
                 </div>
             </div>
         </div>
     </div>
+</div>
+</div>
+</div>
 </div>
