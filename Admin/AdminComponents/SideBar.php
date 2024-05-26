@@ -15,7 +15,7 @@ if (file_exists($file1)) {
     require_once $file2;
 }
 $stmt = $conn->prepare("SELECT role FROM users WHERE email = :login_user");
-$stmt->bindParam(':login_user', $_SESSION['login_user']);
+$stmt->bindParam(':login_user', $_SESSION['login_user']); 
 $stmt->execute();
 $userRole = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -24,7 +24,7 @@ $userRole = $stmt->fetch(PDO::FETCH_ASSOC);
 <div>
     <div class="p-3 pt-0 d-flex justify-content-between shadow">
         <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">
-            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5" />
             </svg>
         </button>
@@ -37,7 +37,7 @@ $userRole = $stmt->fetch(PDO::FETCH_ASSOC);
                 <p class="text-center border-0 text-light loggedinusermail p-2 rounded shadow">
                     <?php echo $_SESSION['login_user'] ?>
                 </p>
-                <p class="fw-bold text-center border-0 text-danger p-0 m-0" id="timeCounter"></p>
+                <p style="font-size: 12px;" class="fw-bold text-center border-0 text-danger p-0 m-0" id="timeCounter"></p>
             </div>
         </div>
     </div>
@@ -85,9 +85,9 @@ $userRole = $stmt->fetch(PDO::FETCH_ASSOC);
                                         </a>
                                         ';
                                         } ?>
-                                        <a href="../../Admin/Pages/FDAccountPage.php" class="sidebar-link btn btn-secondary shadow">
+                                        <!-- <a href="../../Admin/Pages/FDAccountPage.php" class="sidebar-link btn btn-secondary shadow">
                                             FD Accounts
-                                        </a>
+                                        </a> -->
                                     </ul>
                                 </div>
                             </div>
@@ -173,6 +173,19 @@ $userRole = $stmt->fetch(PDO::FETCH_ASSOC);
                         Payments
                     </a>
                 </li>
+                <?php
+                if ($userRole['role'] === 'admin'){
+                    echo "<li>
+                    <a href='../../Admin/Pages/TodaysCollection.php' class='sidebar-link btn btn-secondary shadow'>
+                    <svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='currentColor' class='bi bi-bag-check' viewBox='0 0 16 16'>
+                    <path fill-rule='evenodd' d='M10.854 8.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708 0'/>
+                    <path d='M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z'/>
+                  </svg>
+                        Today's Collection
+                    </a>
+                </li>";
+                }
+                ?>
                 <li>
                     <a href="../../Admin/AdminComponents/Logout.php" class="logout-btn btn btn-danger shadow">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
@@ -183,8 +196,8 @@ $userRole = $stmt->fetch(PDO::FETCH_ASSOC);
                     </a>
                 </li>
             </ul>
-            <div class="text-center text-muted fw-lighter">
-                <p class="text-center developertxt pt-3 mb-0 pb-0">
+            <div class="text-center text-muted">
+                <p class="text-center pt-3 mb-0 pb-0">
                     Developed by
                     <a target="_blank" href="https://bento.me/mrxiwlev">
                         <img src='../../Assets/devlogo.png' alt="" style="height: 80px;" />
@@ -209,7 +222,7 @@ $userRole = $stmt->fetch(PDO::FETCH_ASSOC);
     // Function to update time counter
     function updateTimeCounter() {
         // Calculate duration in seconds
-        var currentTime = Math.floor(Date.now() / 1000);
+        var currentTime = Math.floor(Date.now() / 1000); 
         var loginTime = <?php echo isset($_SESSION['login_time']) ? $_SESSION['login_time'] : 0; ?>;
         var elapsedTime = currentTime - loginTime;
 
@@ -218,7 +231,7 @@ $userRole = $stmt->fetch(PDO::FETCH_ASSOC);
 
         // Format and display remaining duration
         var timeCounter = document.getElementById("timeCounter");
-        timeCounter.textContent = "Log out in: " + formatDuration(remainingTime);
+        timeCounter.textContent = "You will be logged out in: " + formatDuration(remainingTime);
 
         // Check if the remaining time is less than or equal to 0
         if (remainingTime <= 0) {

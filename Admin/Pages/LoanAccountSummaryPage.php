@@ -77,6 +77,10 @@ $member = $stmt->fetch(PDO::FETCH_ASSOC);
                             <p class="member-info-heading">Temporary Address</p>
                             <h5><?php echo $member['address_temp']; ?></h5>
                         </div>
+                        <div class="member-info">
+                            <p class="member-info-heading">Account Opened On</p>
+                            <h5><?php echo $member['account_opened_on']; ?></h5>
+                        </div>
                     </div>
                     <div class="col-sm-4">
                         <div class="member-info">
@@ -85,22 +89,22 @@ $member = $stmt->fetch(PDO::FETCH_ASSOC);
                         </div>
                         <div class="member-info">
                             <p class="member-info-heading">Loan Amount</p>
-                            <h5>Rs. <?php echo $member['loan_amount']; ?></h5>
+                            <h5>Rs. <?php echo number_format($member['loan_amount'], 2); ?></h5>
                         </div>
                         <div class="member-info">
                             <p class="member-info-heading">Approved Amount</p>
-                            <h5>Rs. <?php echo $member['approval_amount']; ?></h5>
+                            <h5>Rs. <?php echo number_format($member['approval_amount'], 2); ?></h5>
                         </div>
                         <div class="member-info">
                             <p class="member-info-heading">EMI</p>
-                            <h5>Rs. <?php echo $member['emi']; ?>/day</h5>
+                            <h5>Rs. <?php echo number_format($member['emi'], 2); ?>/day</h5>
                         </div>
                         <div class="member-info">
                             <p class="member-info-heading">Plan</p>
                             <h5><?php echo $member['plan']; ?> Days</h5>
                         </div>
                         <div class="member-info">
-                            <p class="member-info-heading">Account Opened on</p>
+                            <p class="member-info-heading">Loan Approved On</p>
                             <h5><?php echo $member['account_opened_on']; ?></h5>
                         </div>
                     </div>
@@ -110,26 +114,26 @@ $member = $stmt->fetch(PDO::FETCH_ASSOC);
                     <div class="row mt-3 justify-content-between">
                         <div class="col-sm-auto m-1 pt-3 pb-3 ps-auto pe-auto shadow-sm bg-info-subtle rounded member-info">
                             <p class="alert alert-light text-dark fw-bold rounded p-2">Previous Payment</p>
-                            <h5>Rs. <?php echo $member['last_paid_amount']; ?></h5>
+                            <h5>Rs. <?php echo number_format($member['last_paid_amount'], 2); ?></h5>
                             <h6>Date: <?php echo $member['last_payment']; ?></h6>
                         </div>
                         <div class="col-sm-auto m-1 pt-3 pb-3 ps-auto pe-auto shadow-sm bg-warning-subtle rounded member-info">
                             <p class="alert alert-light text-dark fw-bold rounded p-2">Next Payment</p>
-                            <h5>Rs. <?php echo $member['emi']; ?></h5>
+                            <h5>Rs. <?php echo number_format($member['emi'], 2); ?></h5>
                             <h6>Date: <?php echo $member['next_payment']; ?></h6>
                         </div>
                         <div class="col-sm-auto m-1 pt-3 pb-3 ps-auto pe-auto shadow-sm bg-success-subtle text-success rounded member-info">
                             <p class="alert alert-light text-dark fw-bold rounded p-2">Total Paid</p>
-                            <h5>Rs. <?php echo $member['total_paid']; ?></h5>
+                            <h5>Rs. <?php echo number_format($member['total_paid'], 2); ?></h5>
                         </div>
                         <div class="col-sm-auto m-1 pt-3 pb-3 ps-auto pe-auto shadow-sm bg-danger-subtle text-danger rounded member-info">
                             <p class="alert alert-light text-dark fw-bold rounded p-2">Payment Remaining</p>
                             <h5>Rs.
                                 <?php
                                 if ($member['remaining_payment'] == "null") {
-                                    echo $member['loan_amount'];
+                                    echo number_format($member['loan_amount'], 2);
                                 } else {
-                                    echo $member['remaining_payment'];
+                                    echo number_format($member['remaining_payment'], 2);
                                 }
                                 ?>
                             </h5>

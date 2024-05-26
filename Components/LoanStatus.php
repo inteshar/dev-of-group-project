@@ -2,8 +2,12 @@
 error_reporting(E_ALL & ~E_NOTICE);
 require_once '../dbConnect.php';
 
-$memberId = $_GET['memberId'];
-$msg = "";
+if (isset($_GET['memberId'])) {
+    $memberId = $_GET['memberId'];
+} else {
+    $memberId = "";
+    $msg = "Member ID is required.";
+}
 
 $stmt = $conn->prepare("SELECT members.*, loan_account.* FROM members INNER JOIN loan_account ON members.id=loan_account.member_id WHERE member_id=:id");
 $stmt->bindParam(':id', $memberId);
@@ -49,7 +53,7 @@ if ($stmt->execute()) {
                         <div class="loan-details">
                             <p class="track-left">
                                 Loan Amount <br />
-                                <strong>Rs. <?php echo $member['loan_amount']; ?></strong>
+                                <strong>Rs. <?php echo number_format($member['loan_amount'], 2); ?></strong>
                             </p>
                             <p class="track-right">
                                 Loan ID <br />
@@ -58,8 +62,8 @@ if ($stmt->execute()) {
                         </div>
                         <div class="loan-details">
                             <p class="track-left">
-                                Approval Amount <br />
-                                <strong>Rs. <?php echo $member['approval_amount']; ?></strong>
+                                Remaining Loan Amount <br />
+                                <strong>Rs. <?php echo number_format($member['remaining_payment'], 2); ?></strong>
                             </p>
                             <p class="track-right">
                                 Plan <br />
@@ -69,7 +73,7 @@ if ($stmt->execute()) {
                         <div class="loan-details">
                             <p class="track-left">
                                 EMI <br />
-                                <strong>Rs. <?php echo $member['emi']; ?>/day</strong>
+                                <strong>Rs. <?php echo number_format($member['emi'], 2); ?>/day</strong>
                             </p>
                             <p class="track-right">
                                 Loan Status <br />

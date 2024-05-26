@@ -24,10 +24,10 @@ try {
         echo '</h2>';
         echo '<div id="' . $accordionId . '" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">';
         echo '<div class="accordion-body bg-warning-subtle">
-        Date: ' . $result['date'] . '<br> 
-        Email: ' . $result['email'] . '<br> 
-        Mobile Number: ' . $result['mobile'] . '<br> 
-        Message: ' . htmlspecialchars($result['message']) . '<br>
+        Date: <span class="fw-bold">' . $result['date'] . '</span><br> 
+        Email: <span class="fw-bold">' . $result['email'] . '</span><br> 
+        Mobile Number: <span class="fw-bold">' . $result['mobile'] . '</span><br> 
+        Message: <span class="fw-bold">' . htmlspecialchars($result['message']) . '</span><br>
         <a class="btn btn-danger mt-2 shadow" href="./AdminComponents/MessagesDelete.php?msgId=' . $result['id'] . '">Delete</a>
         </div>';
         echo '</div>';

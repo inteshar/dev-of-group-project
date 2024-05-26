@@ -75,9 +75,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="p-4 rounded shadow">
                     <form action="#" method="POST">
                         <div class="form-group">
-                            <?php if ($msg) {
+                            <?php 
+                            if (isset($msg)) {
                                 echo $msg;
-                            } ?>
+                            }
+                            ?>
                         </div>
                         <div class="form-floating mb-3 p-1">
                             <input type="text" class="form-control" name="name" id="floatingInput" required />

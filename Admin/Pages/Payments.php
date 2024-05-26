@@ -21,67 +21,110 @@ require_once '../../dbConnect.php';
     include '../../Admin/AdminComponents/SideBar.php';
     // require_once '../dbConnect.php';
 
-    $stmt = $conn->prepare("SELECT members.name AS member_name, members.mobile AS member_mobile, members.address_perm AS member_add, combined_accounts.* FROM members INNER JOIN ( SELECT member_id, account_number, account_opened_on FROM loan_account UNION SELECT member_id, account_number, account_opened_on FROM savings_account ) AS combined_accounts ON members.id = combined_accounts.member_id ORDER BY COALESCE(combined_accounts.account_opened_on) DESC LIMIT 10");
+    $stmt = $conn->prepare("SELECT members.*, loan_account.* FROM members INNER JOIN loan_account ON members.id = loan_account.member_id WHERE loan_account.status = 1 AND loan_account.next_payment <= CURDATE() AND loan_account.remaining_payment > 0 ORDER BY loan_account.account_opened_on DESC LIMIT 10");
     $stmt->execute();
     $recent_acc = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
     ?>
     <div class="container">
-        <div class="recent-customers shadow">
-            <div class="bg-primary-subtle rounded p-1">
-                <h5 class="pb-0 p-2 fw-bold">Recent Accounts</h5>
-                <div class="table-container">
-                    <table class="table table-hover text-center">
-                        <thead>
-                            <tr>
-                                <th class="fs-6 fw-bold bg-primary-subtle">SN</th>
-                                <th class="fs-6 fw-bold bg-primary-subtle">Name</th>
-                                <th class="fs-6 fw-bold bg-primary-subtle">Mobile</th>
-                                <th class="fs-6 fw-bold bg-primary-subtle">Address</th>
-                                <th class="fs-6 fw-bold bg-primary-subtle">Account No.</th>
-                                <th class="fs-6 fw-bold bg-primary-subtle">Reg. Date</th>
-                            </tr>
-                        </thead>
-                        <tbody class="fs-6">
-                            <?php
-                            $count = 1;
-                            foreach ($recent_acc as $rec) {
-                                echo "
-                        <tr>
-                        <td>" . $count++ . "</td>
-                        <td class='table-row'>" . $rec['member_name'] . "</td>
-                        <td class='table-row'>" . $rec['member_mobile'] . "</td>
-                        <td class='table-row'>" . $rec['member_add'] . "</td>
-                        <td class='table-row'>" . $rec['account_number'] . "</td>
-                        <td class='table-row'>" . $rec['account_opened_on'] . "</td>
-                    </tr>
-                        ";
-                            }
-                            ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                <div class="mt-3">
+                        <?php
+                        if (isset($_GET['msg'])) {
+                            $message = $_GET['msg'];
+                            echo $message;
+                        }
+                        ?>
+                    </div>
+                <h2 class="pb-2 pt-5 p-2 fw-bold">Today's Payments</h2>
+                <div class="row row-cols-1 row-cols-md-3 g-4 mb-5 pb-5">
+                    
+                    <?php
+                    if ($recent_acc){
+                        foreach ($recent_acc as $rec) {
+                          $openedDate = new DateTime($rec['account_opened_on']);
+                          $planDays = new DateInterval('P' . $rec['plan'] . 'D');
+                          $openedDate->add($planDays);
+                          $dueDate = $openedDate->format('Y-m-d');
+
+                          echo "<div class='col-md-2'>
+                          <div class='card shadow bg-light'>
+                        <img src='../MembersFiles/" . $rec['name'] . "/" . $rec['photo'] . "' class='card-img-top' alt='".$rec['name']."'>
+                        <div class='card-body'>
+                          <h5 class='card-title fw-bold'>".$rec['name']."</h5>
+                          <p class='card-text border-start border-3 border-primary ps-2 shadow-sm rounded-3'>Pending Payment: <span class='fw-bold text-success'><br>Rs. ".number_format($rec['emi'], 2)."</span></p>
+                          <p class='card-text border-start border-3 border-primary ps-2 shadow-sm rounded-3'>Payment Date: <span class='fw-bold text-success'><br>".$rec['next_payment']."</span></p>
+                          <p class='card-text border-start border-3 border-primary ps-2 shadow-sm rounded-3'>Remaining Loan Amount: <span class='fw-bold text-danger'><br>Rs. ".number_format($rec['remaining_payment'], 2)."</span></p>
+                          <p class='card-text border-start border-3 border-primary ps-2 shadow-sm rounded-3'>Due Date: <span class='fw-bold text-danger'><br>".$dueDate."</span></p>
+                        </div>
+                        <div class='card-footer'>
+                          <small class='text-muted'>
+                          <button data-bs-toggle='modal' data-bs-target='#staticBackdrop' class='btn btn-success w-100 fw-bold'
+                          data-name='".$rec['name']."'
+                          data-emi='".$rec['emi']."'
+                          data-photo='".$rec['photo']."'
+                          data-id='".$rec['member_id']."'
+                          data-remaining='".$rec['remaining_payment']."'
+                          data-due='".$dueDate."'
+                          onclick='updateModal(this)'>Pay</button>
+                          </small>
+                        </div>
+                      </div>
+                      </div>
+                      ";
+                      }
+                    }else{
+                      echo "<p class='p-3 bg-success-subtle text-success fw-bold fs-6 text-center rounded shadow-sm'>No pending payments for today.</p>";
+                    }
+                    ?>
         </div>
     </div>
 
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Payment Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+      <form action="../AdminComponents/AcceptPayment.php" method="POST">
+        <p class="p-2 bg-secondary-subtle text-center text-danger fw-bold">Please double check the details before payment.</p>
+        
+            <div class="mb-3">
+            <label for="modalName" class="form-label">Name</label>
+            <input type="text" id="modalName" class="form-control fw-bold text-danger fs-4" value="data-name" disabled>
+            </div>
+            <div class="mb-3">
+            <label for="modalEmi" class="form-label">Amount (Rs.)</label>
+            <input type="text" id="modalEmi" name="payment" class="form-control fw-bold text-danger fs-4" inputmode="numeric">
+            </div>
+
+            <input type="text" id="modalId" name="memberId" class="form-control fw-bold text-danger fs-4" hidden>
+            <input type="text" id="modalName2" name="name" class="form-control fw-bold text-danger fs-4" hidden>
+            
+                <button type="submit" class="btn btn-success w-100 fw-bold">Save Payment</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js" integrity="sha256-gOQJIa9+K/XdfAuBkg2ONAdw5EnQbokw/s2b8BqsRFg=" crossorigin="anonymous"></script>
+
+    <script>
+    function updateModal(element) {
+        document.getElementById('modalName').value = element.getAttribute('data-name');
+        document.getElementById('modalName2').value = element.getAttribute('data-name');
+        document.getElementById('modalEmi').value = element.getAttribute('data-emi');
+        document.getElementById('modalId').value = element.getAttribute('data-id');
+    }
+    </script>
 
 </body>
 
 </html>
-
-<style>
-    .recent-customers {
-        margin: 20px 0;
-    }
-
-    .recent-customers .table-container {
-        overflow-x: auto;
-    }
-
-    .recent-customers .table-container table .table-row {
-        min-width: 180px;
-    }
-</style>

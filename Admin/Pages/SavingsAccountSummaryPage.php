@@ -3,8 +3,8 @@ error_reporting(E_ALL & ~E_NOTICE);
 require_once '../../dbConnect.php';
 
 $memberId = $_GET['memberId'];
-$from = $_POST['from'];
-$to = $_POST['to'];
+$from = isset($_POST['from']) ? $_POST['from'] : '';
+$to = isset($_POST['to']) ? $_POST['to'] : '';
 
 $stmt = $conn->prepare("SELECT members.*, savings_account.* FROM members INNER JOIN savings_account ON members.id=savings_account.member_id WHERE member_id=:id");
 $stmt->bindParam(':id', $memberId);

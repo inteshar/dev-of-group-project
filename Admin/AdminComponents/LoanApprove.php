@@ -3,8 +3,9 @@ require_once '../../dbConnect.php'; // Include your database connection file
 
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
     $memberId = $_GET['id'];
+    $loan_amount = $_GET['la'];
     $next_payment = date("Y-m-d", strtotime("+1 day"));
-    $stmt = $conn->prepare("UPDATE `loan_account` SET `status` = '1', `account_opened_on` = CURDATE(), `next_payment` = '$next_payment'  WHERE `loan_account`.`member_id` = :id");
+    $stmt = $conn->prepare("UPDATE `loan_account` SET `status` = '1', `account_opened_on` = CURDATE(), `next_payment` = '$next_payment', `remaining_payment` = '$loan_amount'  WHERE `loan_account`.`member_id` = :id");
 
     $stmt->bindParam(':id', $memberId);
 

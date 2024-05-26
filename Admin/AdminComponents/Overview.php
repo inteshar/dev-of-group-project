@@ -6,6 +6,24 @@ $totalMembers = $result['totalMembers'];
 $stmt1 = $conn->query("SELECT COUNT(*) AS totalApplications FROM loan_account where status = 0");
 $result1 = $stmt1->fetch(PDO::FETCH_ASSOC);
 $totalApplications = $result1['totalApplications'];
+
+$stmt3 = $conn->prepare("SELECT amount FROM payments WHERE date = CURDATE()");
+$stmt3->execute();
+$payments = $stmt3->fetchAll(PDO::FETCH_ASSOC);
+
+$totalPaymentsToday = 0;
+foreach ($payments as $payment) {
+    $totalPaymentsToday += $payment['amount'];
+}
+
+$stmt4 = $conn->prepare("SELECT remaining_payment FROM loan_account");
+$stmt4->execute();
+$pending = $stmt4->fetchAll(PDO::FETCH_ASSOC);
+
+$totalPending = 0;
+foreach ($pending as $pen) {
+    $totalPending += $pen['remaining_payment'];
+}
 ?>
 <div class="overview">
     <div class="card-group">
@@ -27,7 +45,7 @@ $totalApplications = $result1['totalApplications'];
                     <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0M9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1M4.5 9a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1zM4 10.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m.5 2.5a.5.5 0 0 1 0-1h4a.5.5 0 0 1 0 1z" />
                 </svg>
                 <p class="fs-6 text-end">
-                    New Loan Applications
+                    New Loan Requests
                     <br />
                     <span class="fs-2 fw-bold"><?php echo $totalApplications; ?></span>
                 </p>
@@ -40,9 +58,9 @@ $totalApplications = $result1['totalApplications'];
                     <path d="M16 6.5h-5.551a2.678 2.678 0 0 1-.443 1.042C9.613 8.088 8.963 8.5 8 8.5c-.963 0-1.613-.412-2.006-.958A2.679 2.679 0 0 1 5.551 6.5H0v6A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5z" />
                 </svg>
                 <p class="fs-6 text-end">
-                    Today's Total Payment
+                    Today's Total Collection
                     <br />
-                    <span class="fs-2 fw-bold">Rs. 251424</span>
+                    <span class="fs-2 fw-bold">Rs. <?php echo number_format($totalPaymentsToday, 2)?></span>
                 </p>
             </div>
         </div>
@@ -53,9 +71,9 @@ $totalApplications = $result1['totalApplications'];
                     <path d="M0 5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V7a2 2 0 0 1-2-2z" />
                 </svg>
                 <p class="fs-6 text-end">
-                    Pending Payments
+                    Total Payments Pending
                     <br />
-                    <span class="fs-2 fw-bold">Rs. 457125</span>
+                    <span class="fs-2 fw-bold">Rs. <?php echo number_format($totalPending, 2) ?></span>
                 </p>
             </div>
         </div>

@@ -2,11 +2,7 @@
 require_once '../../dbConnect.php';
 
 // Fetch data from MySQL
-$stmt = $conn->prepare("SELECT members.id, loan_account.*, members.name, members.photo
-FROM members
-INNER JOIN loan_account ON members.id = loan_account.member_id
-WHERE loan_account.status = '0'
-ORDER BY account_opened_on DESC;");
+$stmt = $conn->prepare("SELECT members.*, loan_account.* FROM members INNER JOIN loan_account ON members.id = loan_account.member_id WHERE loan_account.status = '0' ORDER BY account_opened_on DESC;");
 $stmt->execute();
 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -161,6 +157,7 @@ file_put_contents('../DataFiles/loan_account_data.json', $json_data);
         </div>
 
         <input type="hidden" id="approveId" value="">
+        <input type="hidden" id="approveLoanAmount" value=""> <!-- Added hidden input for loan amount -->
     </div>
     <div>
         <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
@@ -266,8 +263,9 @@ file_put_contents('../DataFiles/loan_account_data.json', $json_data);
             var myModal = new bootstrap.Modal(document.getElementById('confirmApproveModal'));
             myModal.show();
 
-            // Store the ID for deletion when confirmed
+            // Store the ID and loan amount for approval when confirmed
             document.getElementById('approveId').value = memberId;
+            document.getElementById('approveLoanAmount').value = loan_amount; // Store loan amount in a hidden input
 
             // Display member's name in the modal
             document.getElementById('memberName').innerText = name;
@@ -280,7 +278,8 @@ file_put_contents('../DataFiles/loan_account_data.json', $json_data);
 
         function proceedApprove() {
             var id = document.getElementById('approveId').value;
-            window.location.href = `../../Admin/AdminComponents/LoanApprove.php?id=${id}`;
+            var loan_amount = document.getElementById('approveLoanAmount').value; // Retrieve the stored loan amount
+            window.open(`../../Admin/AdminComponents/LoanApprove.php?id=${id}&la=${loan_amount}`, '_blank');
         }
     </script>
     <script>
@@ -328,4 +327,5 @@ file_put_contents('../DataFiles/loan_account_data.json', $json_data);
         height: 80px;
         border-radius: 30px;
     }
+</style>
 </style>

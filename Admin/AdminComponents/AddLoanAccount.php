@@ -7,7 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $approvalAmount = $_POST['approval_amount'];
     $plan = $_POST['plan'];
 
-    $emi = round(($loanAmount - $approvalAmount) / $plan, 3);
+    $emi = round($loanAmount / $plan, 3);
 
     $stmt1 = $conn->prepare("SELECT members.name FROM members WHERE id = :id");
     $stmt1->bindParam(':id', $memberId);
