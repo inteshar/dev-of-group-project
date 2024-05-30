@@ -56,15 +56,15 @@ $member = $stmt2->fetchAll(PDO::FETCH_ASSOC);
                         </div>
                         <div class="col-sm-12">
                             <label for="formFile" class="form-label">Aadhaar Card<span class="text-danger fw-bold">*</span></label>
-                            <input class="form-control" type="file" id="photo" name="aadhaar_card" required>
+                            <input class="form-control" type="file" id="photo" accept=".pdf" name="aadhaar_card" required>
                         </div>
                         <div class="col-sm-12">
                             <label for="formFile" class="form-label">PAN Card<span class="text-danger fw-bold">*</span></label>
-                            <input class="form-control" type="file" id="photo" name="pan_card" required>
+                            <input class="form-control" type="file" id="photo" accept=".pdf" name="pan_card" required>
                         </div>
                         <div class="col-sm-12">
                             <label for="formFile" class="form-label">Signature<span class="text-danger fw-bold">*</span></label>
-                            <input class="form-control" type="file" id="photo" name="signature" required>
+                            <input class="form-control" type="file" id="photo" accept=".pdf" name="signature" required>
                         </div>
                         <!-- <div class="col-sm-6">
                             <label for="validationCustom01" class="form-label">Relative Name<span class="text-danger fw-bold">*</span></label>
@@ -97,7 +97,7 @@ $member = $stmt2->fetchAll(PDO::FETCH_ASSOC);
                         </div> -->
                         <div class="col-sm-12">
                             <label for="formFile" class="form-label">Reference Aadhaar Card<span class="text-danger fw-bold">*</span></label>
-                            <input class="form-control" type="file" id="photo" name="ref_aadhaar" required>
+                            <input class="form-control" type="file" id="photo" accept=".pdf" name="ref_aadhaar" required>
                         </div>
                         <div class="col-12">
                             <div class="form-check">

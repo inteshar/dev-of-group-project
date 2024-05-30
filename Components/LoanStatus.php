@@ -61,9 +61,20 @@ if ($stmt->execute()) {
                             </p>
                         </div>
                         <div class="loan-details">
-                            <p class="track-left">
+                        <p class="track-left">
                                 Remaining Loan Amount <br />
-                                <strong>Rs. <?php echo number_format($member['remaining_payment'], 2); ?></strong>
+                                <strong>
+                                    <?php
+                                        if ($member['remaining_payment'] == "null") {
+                                            echo "Rs. ".number_format($member['loan_amount'], 2);
+                                        } elseif ($member['remaining_payment'] < 0){
+                                            $remainingPayment = abs($member['remaining_payment']);
+                                            echo "Excess Amount: Rs. " . number_format($remainingPayment, 2);
+                                        }else {
+                                            echo "Rs. ".number_format($member['remaining_payment'], 2);
+                                        }
+                                    ?>
+                                </strong>
                             </p>
                             <p class="track-right">
                                 Plan <br />

@@ -115,7 +115,7 @@ $dueDate = $openedDate->format('Y-m-d');
                     </div>
                 </div>
                 <div class="container">
-                    <h4 class="fw-bold border-1 border-bottom border-success pb-3">Payment Summary<br><span class="fs-6 fw-light"><?php echo $member['name']; ?></span></h4>
+                    <h4 class="fw-bold border-1 border-bottom border-success pb-3">Payment Summary<br><span class="fs-6 fw-light"><?php echo $member['name']; ?> - Member ID: <?php echo $member['member_id']; ?></span></h4>
                     <div class="row mt-3 justify-content-between">
                         <div class="col-sm-auto m-1 pt-3 pb-3 ps-auto pe-auto shadow-sm bg-info-subtle rounded member-info">
                             <p class="alert alert-light text-dark fw-bold rounded p-2">Previous Payment</p>
@@ -132,13 +132,16 @@ $dueDate = $openedDate->format('Y-m-d');
                             <h5>Rs. <?php echo number_format($member['total_paid'], 2); ?></h5>
                         </div>
                         <div class="col-sm-auto m-1 pt-3 pb-3 ps-auto pe-auto shadow-sm bg-danger-subtle text-danger rounded member-info">
-                            <p class="alert alert-light text-dark fw-bold rounded p-2">Payment Remaining</p>
-                            <h5>Rs.
-                                <?php
+                            <p class="alert alert-light text-dark fw-bold rounded p-2">Remaining Payment</p>
+                            <h5>
+                            <?php
                                 if ($member['remaining_payment'] == "null") {
-                                    echo number_format($member['loan_amount'], 2);
-                                } else {
-                                    echo number_format($member['remaining_payment'], 2);
+                                    echo "Rs. ".number_format($member['loan_amount'], 2);
+                                } elseif ($member['remaining_payment'] < 0){
+                                    $remainingPayment = abs($member['remaining_payment']);
+                                    echo "Excess Amount: Rs. " . number_format($remainingPayment, 2);
+                                }else {
+                                    echo "Rs. ".number_format($member['remaining_payment'], 2);
                                 }
                                 ?>
                             </h5>

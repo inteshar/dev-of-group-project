@@ -197,10 +197,14 @@ file_put_contents('../DataFiles/members_data.json', $json_data);
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js" integrity="sha256-gOQJIa9+K/XdfAuBkg2ONAdw5EnQbokw/s2b8BqsRFg=" crossorigin="anonymous"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const tableBody = document.querySelector('#myTable tbody');
+            tableBody.innerHTML = '<tr><td colspan="14" style="text-align: left;">Loading, please wait...</td></tr>';
+
             fetch('../DataFiles/members_data.json')
                 .then(response => response.json())
                 .then(data => {
                     const tableBody = document.querySelector('#myTable tbody');
+                    tableBody.innerHTML = ''; // Clear loading message
                     data.forEach(row => {
                         const tr = document.createElement('tr');
                         const kycStatus = row.kyc_status == '1' ? `<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="text-success bi bi-check-circle-fill" viewBox="0 0 16 16">
