@@ -19,26 +19,114 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $ipAddress = $_SERVER['REMOTE_ADDR'];
     $userAgent = $_SERVER['HTTP_USER_AGENT'];
 
-    function getDeviceName($userAgent)
-    {
-        $device = "Unknown Device";
 
-        if (strpos($userAgent, 'iPhone') !== false) {
-            $device = "iPhone";
-        } elseif (strpos($userAgent, 'Android') !== false) {
-            $device = "Android Phone";
-        } elseif (strpos($userAgent, 'iPad') !== false) {
-            $device = "iPad";
-        } elseif (strpos($userAgent, 'Macintosh') !== false) {
-            $device = "Macintosh";
-        } elseif (strpos($userAgent, 'Windows') !== false) {
-            $device = "Windows PC";
+    function getBrowser() 
+    { 
+        $u_agent = $_SERVER['HTTP_USER_AGENT']; 
+        $bname = 'Unknown';
+        $platform = 'Unknown';
+        $version= "";
+
+        // First get the platform
+        if (preg_match('/linux/i', $u_agent)) {
+            $platform = 'Linux';
         }
+        elseif (preg_match('/macintosh|mac os x/i', $u_agent)) {
+            $platform = 'Mac';
+        }
+        elseif (preg_match('/windows|win32/i', $u_agent)) {
+            $platform = 'Windows';
+        }
+        elseif (preg_match('/iphone/i', $u_agent)) {
+            $platform = 'iPhone';
+        }
+        elseif (preg_match('/ipad/i', $u_agent)) {
+            $platform = 'iPad';
+        }
+        elseif (preg_match('/android/i', $u_agent)) {
+            $platform = 'Android';
+        }
+        elseif (preg_match('/blackberry/i', $u_agent)) {
+            $platform = 'BlackBerry';
+        }
+        elseif (preg_match('/webos/i', $u_agent)) {
+            $platform = 'Mobile';
+        }
+        
+        // Next get the name of the browser
+        if(preg_match('/MSIE/i',$u_agent) && !preg_match('/Opera/i',$u_agent)) 
+        { 
+            $bname = 'Internet Explorer'; 
+            $ub = "MSIE"; 
+        } 
+        elseif(preg_match('/Firefox/i',$u_agent)) 
+        { 
+            $bname = 'Mozilla Firefox'; 
+            $ub = "Firefox"; 
+        } 
+        elseif(preg_match('/Chrome/i',$u_agent)) 
+        { 
+            $bname = 'Google Chrome'; 
+            $ub = "Chrome"; 
+        } 
+        elseif(preg_match('/Safari/i',$u_agent)) 
+        { 
+            $bname = 'Apple Safari'; 
+            $ub = "Safari"; 
+        } 
+        elseif(preg_match('/Opera/i',$u_agent)) 
+        { 
+            $bname = 'Opera'; 
+            $ub = "Opera"; 
+        } 
+        elseif(preg_match('/Netscape/i',$u_agent)) 
+        { 
+            $bname = 'Netscape'; 
+            $ub = "Netscape"; 
+        } 
+        
+        // Finally get the correct version number
+        $known = array('Version', $ub, 'other');
+        $pattern = '#(?<browser>' . join('|', $known) .
+        ')[/ ]+(?<version>[0-9.|a-zA-Z.]*)#';
+        if (!preg_match_all($pattern, $u_agent, $matches)) {
+            // we have no matching number just continue
+        }
+        
+        // See how many we have
+        $i = count($matches['browser']);
+        if ($i != 1) {
+            // We will have two since we are not using 'other' argument yet
+            // See if version is before or after the name
+            if (strripos($u_agent,"Version") < strripos($u_agent,$ub)){
+                $version= $matches['version'][0];
+            }
+            else {
+                $version= $matches['version'][1];
+            }
+        }
+        else {
+            $version= $matches['version'][0];
+        }
+        
+        // Check if we have a number
+        if ($version==null || $version=="") {$version="?";}
+        
+        return array(
+            'userAgent' => $u_agent,
+            'name'      => $bname,
+            'version'   => $version,
+            'platform'  => $platform,
+            'pattern'   => $pattern
+        );
+    } 
 
-        return $device;
-    }
+    // Now try it
+    $ua = getBrowser();
+    $deviceType = (preg_match('/Mobile|Android|BlackBerry|iPhone|iPad|webOS/i', $ua['userAgent'])) ? 'Mobile' : 'PC';
+    $deviceDetails = "Device: " . $deviceType . "\nBrowser: " . $ua['name'] . "\nVersion: " . $ua['version'] . "\nPlatform: " . $ua['platform'] . "\nUser Agent: " . $ua['userAgent'];
 
-    $deviceName = getDeviceName($userAgent);
+    $deviceName = nl2br($deviceDetails);
 
     $stmt = $conn->prepare("SELECT * FROM users WHERE email=:email AND password=:password");
     $stmt->bindParam(':email', $email);
@@ -50,9 +138,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($row) {
         $_SESSION['login_user'] = $email;
         $_SESSION['login_time'] = time();
-        $stmt = $conn->prepare("INSERT INTO login_logs (email, ip_address, device) 
-                        VALUES (:email, :ipaddress, :device)");
+        $time = date('Y-m-d h:i:s A');
+        $stmt = $conn->prepare("INSERT INTO login_logs (email, datetime, ip_address, device) 
+                        VALUES (:email, :time, :ipaddress, :device)");
         $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':time', $time);
         $stmt->bindParam(':ipaddress', $ipAddress);
         $stmt->bindParam(':device', $deviceName);
         $stmt->execute();
