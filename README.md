@@ -27,7 +27,7 @@ This project is a website developed for a client named "Development of Group." T
     ```
 3. Set up a local server environment (e.g., using XAMPP, WAMP, or MAMP).
 4. Import the provided SQL file into your MySQL database.
-5. Update the database connection details in the `config.php` file.
+5. Update the database connection details in the `dbConnect.php` file.
 6. Run the project on your local server.
 
 ## Usage
